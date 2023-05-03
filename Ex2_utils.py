@@ -17,6 +17,20 @@ def conv1D(in_signal: np.ndarray, k_size: np.ndarray) -> np.ndarray:
     :param k_size: 1-D array as a kernel
     :return: The convolved array
     """
+    # need to return the convolved array so needs to know what is the size of the convolved array
+    result = in_signal.size + k_size.size - 1
+
+    """" at first, needs to flip the kernel """
+    start_index = 0
+    end_index = len(k_size) - 1
+    while end_index > start_index:
+        k_size[start_index], k_size[end_index] = k_size[end_index], k_size[start_index]
+        start_index += 1
+        end_index += 1
+
+
+
+
 
 
 def conv2D(in_image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
