@@ -1,10 +1,10 @@
-import numpy as np
 from ex2_utils import *
 import matplotlib.pyplot as plt
-from cv2 import cv2 as cv2
+import cv2
 import time
-
-
+import numpy as np
+import warnings
+warnings.filterwarnings("ignore")
 def MSE(a: np.ndarray, b: np.ndarray) -> float:
     return np.square(a - b).mean()
 
@@ -28,7 +28,7 @@ def conv1Demo():
 
 
 def conv2Demo():
-    img = cv2.imread('input/beach.jpeg', cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread('beach.jpg', cv2.IMREAD_GRAYSCALE)
     kernel = np.ones((5, 5))
     kernel = kernel / kernel.sum()
     c_img = conv2D(img, kernel) / 255
@@ -161,14 +161,14 @@ def biliteralFilterDemo():
 
 
 def main():
-    print("ID:", myID())
-    conv1Demo()
+    #print("ID:", myID())
+    #conv1Demo()
     conv2Demo()
-    derivDemo()
-    blurDemo()
-    edgeDemo()
-    houghDemo()
-    biliteralFilterDemo()
+    #derivDemo()
+    #blurDemo()
+    #edgeDemo()
+    #houghDemo()
+    #biliteralFilterDemo()
 
 
 if __name__ == '__main__':

@@ -1,14 +1,14 @@
 import numpy as np
-from cv2 import cv2 as cv
+import cv2
 import math
 
 
-def myID() -> np.int:
+def myID() -> int:
     """
     Return my ID (not the friend's ID I copied from)
     :return: int
     """
-    return 211780267
+    return int(211780267)
 
 
 def conv1D(in_signal: np.ndarray, k_size: np.ndarray) -> np.ndarray:
@@ -22,7 +22,7 @@ def conv1D(in_signal: np.ndarray, k_size: np.ndarray) -> np.ndarray:
     result_size = in_signal.size + k_size.size - 1
     result = np.zeros(result_size)
     flipped_kernel = np.flip(k_size)  # Flipping the kernel using numpy function
-    for i in range():  # The convolution
+    for i in range(result_size):  # The convolution
         for j in range(k_size.size):
             if i - j < 0 or i - j >= in_signal.size:
                 continue
@@ -41,22 +41,18 @@ def conv2D(in_image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     :param kernel: A kernel
     :return: The convolved image
     """
-    kernel = np.flip(kernel)  # Flip the kernel horizontally and vertically
-    kernel_height, kernel_width = kernel.shape
-    img_height, img_width = in_image.shape
-    ans_matrix = np.zeros_like(in_image)
-    _pad_height = math.floor(kernel_height / 2)  # Padding for height
-    _pad_width = math.floor(kernel_width / 2)  # Padding for width
-    #  I choose the 'edge' mode for padding
-    mat = np.pad(in_image, pad_width=((_pad_height, _pad_height), (_pad_width, _pad_width)),
-                 mode='edge')
-
-    for rows in range(img_height):
-        for columns in range(img_width):
-            curr_mat = mat[rows:rows + kernel_height, columns:columns + kernel_width]
-            new_val = np.sum(curr_mat * kernel).round()
-            ans_matrix[rows, columns] = new_val
-    return ans_matrix
+    kernel_flipped = np.flip(kernel)
+    edge_padding_size  = kernel_flipped.shape[0] // 2 #  number of pixels to add for each axis
+    img_mat = np.pad(in_image, pad_width=edge_padding_size , mode='edge')  #  padding
+    result_mat = np.zeros_like(in_image)  # for store the result
+    for i in range(result_mat.shape[0]):  # the convolution
+        for j in range(result_mat.shape[1]):
+            convolved_pixel = 0
+            for k in range(kernel_flipped.shape[0]):
+                for l in range(kernel_flipped.shape[1]):
+                    convolved_pixel += img_mat[k + i, l + j] * kernel_flipped[k, l]
+            result_mat[i, j] = convolved_pixel
+    return result_mat
 
 
 
@@ -70,10 +66,10 @@ def convDerivative(in_image: np.ndarray) -> (np.ndarray, np.ndarray):
     :return: (directions, magnitude)
         """
         kernel_x = np.array([[1, 0, -1]])
-        x_derivative = cv.filter2D(in_image, -1, kernel_x, borderType = cv.BORDER_REPLICATE)
+        x_derivative = cv2.filter2D(in_image, -1, kernel_x, borderType = cv2.BORDER_REPLICATE)
         #  compute the Y derivative using convolution with [1, 0, -1]T
         kernel_y = kernel_x.T
-        y_derivative = cv.filter2D(in_image, -1, kernel_y, borderType = cv.BORDER_REPLICATE)
+        y_derivative = cv2.filter2D(in_image, -1, kernel_y, borderType = cv2.BORDER_REPLICATE)
         #  compute the magnitude and direction using the x and y derivatives
         magnitude = np.sqrt(x_derivative ** 2 + y_derivative ** 2).astype(np.float64)
         direction = np.arctan2(y_derivative, x_derivative).astype(np.float64)
@@ -170,12 +166,12 @@ def houghCircle(img: np.ndarray, min_radius: int, max_radius: int) -> list:
 
     max_radius = min(max_radius, min(img.shape) // 2)
     accumulator = np.zeros((len(img), len(img[0]), max_radius + 1), dtype=int)  # initialize accumulator matrix
-    x_derivative = cv.Sobel(img, cv.CV_64F, 1, 0, ksize=threshold)
-    y_derivative = cv.Sobel(img, cv.CV_64F, 0, 1, ksize=threshold)
+    x_derivative = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=threshold)
+    y_derivative = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=threshold)
     direction = np.degrees(np.arctan2(y_derivative, x_derivative))
 
     radius_step = max(1, (max_radius - min_radius) // 10)
-    edges = cv.Canny(img, 75, 150)  # detect edges using Canny edge detection
+    edges = cv2.Canny(img, 75, 150)  # detect edges using Canny edge detection
 
     for x in range(len(edges)):  # iterate over edge pixels
         for y in range(len(edges[0])):
