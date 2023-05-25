@@ -152,7 +152,7 @@ def edgeDetectionZeroCrossingSimple(img: np.ndarray) -> np.ndarray:
 
 
 
-
+## part 4 for the assignment
 
 def houghCircle(img: np.ndarray, min_radius: int, max_radius: int) -> list:
     """
@@ -194,3 +194,18 @@ def houghCircle(img: np.ndarray, min_radius: int, max_radius: int) -> list:
     circles_list.extend((y[i], x[i], radius[i]) for i in range(len(x)) if x[i] != 0 or y[i] != 0 or radius[i] != 0)
 
     return circles_list
+
+
+
+
+## part 5 for the assignment
+
+def bilateral_filter_implement(in_image: np.ndarray, k_size: int, sigma_color: float, sigma_space: float) -> (
+        np.ndarray, np.ndarray):
+    """
+    :param in_image: input image
+    :param k_size: Kernel size
+    :param sigma_color: represents the filter sigma in the color space.
+    :param sigma_space: represents the filter sigma in the coordinate.
+    :return: OpenCV implementation, my implementation
+    """
