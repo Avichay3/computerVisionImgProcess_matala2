@@ -40,3 +40,37 @@ def conv2D(in_image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     :param kernel: A kernel
     :return: The convolved image
     """
+
+
+
+
+## part 2 of the assignment
+
+def convDerivative(in_image: np.ndarray) -> (np.ndarray, np.ndarray):
+        """
+Calculate gradient of an image
+:param in_image: Gray scale image
+:return: (directions, magnitude)
+    """
+
+
+
+
+##  part 2.2
+def blurImage1(in_image: np.ndarray, k_size: int) -> np.ndarray:
+    """
+    Blur an image using a Gaussian kernel
+    :param in_image: Input image
+    :param k_size: Kernel size
+    :return: The Blurred image
+    """
+
+
+
+def blurImage2(in_image: np.ndarray, k_size: int) -> np.ndarray:
+    """
+Blur an image using a Gaussian kernel using Open CV built-in functions
+:param in_image: Input image
+:param k_size: Kernel size
+:return: The Blurred image
+"""
