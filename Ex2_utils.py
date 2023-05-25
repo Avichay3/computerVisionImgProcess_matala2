@@ -48,7 +48,8 @@ def conv2D(in_image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     _pad_height = math.floor(kernel_height / 2)  # Padding for height
     _pad_width = math.floor(kernel_width / 2)  # Padding for width
     #  I choose the 'edge' mode for padding
-    mat = np.pad(in_image, pad_width=((_pad_height, _pad_height), (_pad_width, _pad_width)), mode='edge')
+    mat = np.pad(in_image, pad_width=((_pad_height, _pad_height), (_pad_width, _pad_width)),
+                 mode='edge')
 
     for rows in range(img_height):
         for columns in range(img_width):
@@ -68,11 +69,20 @@ Calculate gradient of an image
 :param in_image: Gray scale image
 :return: (directions, magnitude)
     """
+        kernel_x = np.array([[1, 0, -1]])
+        x_derivative = cv.filter2D(in_image, -1, kernel_x)
+        #  compute the Y derivative using convolution with [1, 0, -1]T
+        kernel_y = np.array([[1], [0], [-1]])
+        y_derivative = cv.filter2D(in_image, -1, kernel_y)
+        #  compute the magnitude and direction using the x and y derivatives
+        magnitude = np.sqrt(x_derivative ** 2 + y_derivative ** 2).astype(np.float64)
+        direction = np.arctan2(y_derivative, x_derivative).astype(np.float64)
+        return magnitude, direction
 
 
 
 
-##  part 2.2
+##  Part 2.2, this is a bonus
 def blurImage1(in_image: np.ndarray, k_size: int) -> np.ndarray:
     """
     Blur an image using a Gaussian kernel
