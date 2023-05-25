@@ -70,10 +70,10 @@ Calculate gradient of an image
 :return: (directions, magnitude)
     """
         kernel_x = np.array([[1, 0, -1]])
-        x_derivative = cv.filter2D(in_image, -1, kernel_x)
+        x_derivative = cv.filter2D(in_image, -1, kernel_x, borderType = cv.BORDER_REPLICATE)
         #  compute the Y derivative using convolution with [1, 0, -1]T
         kernel_y = np.array([[1], [0], [-1]])
-        y_derivative = cv.filter2D(in_image, -1, kernel_y)
+        y_derivative = cv.filter2D(in_image, -1, kernel_y, borderType = cv.BORDER_REPLICATE)
         #  compute the magnitude and direction using the x and y derivatives
         magnitude = np.sqrt(x_derivative ** 2 + y_derivative ** 2).astype(np.float64)
         direction = np.arctan2(y_derivative, x_derivative).astype(np.float64)
@@ -93,6 +93,7 @@ def blurImage1(in_image: np.ndarray, k_size: int) -> np.ndarray:
 
 
 
+
 def blurImage2(in_image: np.ndarray, k_size: int) -> np.ndarray:
     """
 Blur an image using a Gaussian kernel using Open CV built-in functions
@@ -100,3 +101,6 @@ Blur an image using a Gaussian kernel using Open CV built-in functions
 :param k_size: Kernel size
 :return: The Blurred image
 """
+
+
+##  Part 3 Edge detection
