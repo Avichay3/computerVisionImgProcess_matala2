@@ -113,7 +113,7 @@ def edgeDemoLOG():
 
 def edgeDemo():
     edgeDemoSimple()
-    edgeDemoLOG()
+#    edgeDemoLOG()
 
 
 def houghDemo():
@@ -161,14 +161,16 @@ def biliteralFilterDemo():
 
 
 def main():
-    #print("ID:", myID())
+   #print("ID:", myID())
     #conv1Demo()
     #conv2Demo()
     #derivDemo()
 
     #blurDemo()
-    #edgeDemo()
-    houghDemo()
+    edgeDemo()
+
+    #houghDemo()
+
     #biliteralFilterDemo()
 
 

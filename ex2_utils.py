@@ -150,9 +150,6 @@ def edgeDetectionZeroCrossingSimple(img: np.ndarray) -> np.ndarray:
 
 ## part 4 for the assignment
 
-import cv2
-import numpy as np
-
 def houghCircle(img: np.ndarray, min_radius: int, max_radius: int) -> list:
     if img.max() <= 1: # normalize the image if the intensities are between 0-1
         img = (img * 255).astype('uint8')
