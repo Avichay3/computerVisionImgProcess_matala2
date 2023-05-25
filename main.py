@@ -28,7 +28,7 @@ def conv1Demo():
 
 
 def conv2Demo():
-    img = cv2.imread('beach.jpg', cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread('input/beach.jpg', cv2.IMREAD_GRAYSCALE)
     kernel = np.ones((5, 5))
     kernel = kernel / kernel.sum()
     c_img = conv2D(img, kernel) / 255
@@ -45,7 +45,7 @@ def conv2Demo():
 
 
 def derivDemo():
-    img = cv2.imread('input/beach.jpeg', cv2.IMREAD_GRAYSCALE) / 255
+    img = cv2.imread('input/beach.jpg', cv2.IMREAD_GRAYSCALE) / 255
     ori, mag = convDerivative(img)
 
     f, ax = plt.subplots(1, 2)
@@ -163,11 +163,12 @@ def biliteralFilterDemo():
 def main():
     #print("ID:", myID())
     #conv1Demo()
-    conv2Demo()
+    #conv2Demo()
     #derivDemo()
+
     #blurDemo()
     #edgeDemo()
-    #houghDemo()
+    houghDemo()
     #biliteralFilterDemo()
 
 
