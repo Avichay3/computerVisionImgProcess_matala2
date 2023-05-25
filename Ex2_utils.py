@@ -65,10 +65,10 @@ def conv2D(in_image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
 
 def convDerivative(in_image: np.ndarray) -> (np.ndarray, np.ndarray):
         """
-Calculate gradient of an image
-:param in_image: Gray scale image
-:return: (directions, magnitude)
-    """
+    Calculate gradient of an image
+    :param in_image: Gray scale image
+    :return: (directions, magnitude)
+        """
         kernel_x = np.array([[1, 0, -1]])
         x_derivative = cv.filter2D(in_image, -1, kernel_x, borderType = cv.BORDER_REPLICATE)
         #  compute the Y derivative using convolution with [1, 0, -1]T
@@ -96,12 +96,55 @@ def blurImage1(in_image: np.ndarray, k_size: int) -> np.ndarray:
 
 def blurImage2(in_image: np.ndarray, k_size: int) -> np.ndarray:
     """
-Blur an image using a Gaussian kernel using Open CV built-in functions
-:param in_image: Input image
-:param k_size: Kernel size
-:return: The Blurred image
-"""
+    Blur an image using a Gaussian kernel using Open CV built-in functions
+    :param in_image: Input image
+    :param k_size: Kernel size
+    :return: The Blurred image
+    """
+
+
 
 
 ##  Part 3 Edge detection
+def edgeDetectionZeroCrossingLOG(img: np.ndarray) -> np.ndarray:
+    """
+    Detecting edges using "ZeroCrossingLOG" method
+    :param img: Input image
+    :return: Edge matrix
+    """
 
+
+
+def edgeDetectionZeroCrossingSimple(img: np.ndarray) -> np.ndarray:
+    """
+    Detecting edges using the "ZeroCrossing" method
+    :param img: Input image
+    :return: Edge matrix
+    """
+    crossing_zero_img = np.zeros(img.shape)
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            try:
+                # check if there is a "zero crossing"
+                # count the positive and negative values among the neighboring pixels
+                positive_count = 0
+                negative_count = 0
+
+                neighbor_pixels = [img[i + 1, j - 1], img[i + 1, j], img[i + 1, j + 1], img[i, j - 1],
+                                    img[i, j + 1], img[i - 1, j - 1], img[i - 1, j], img[i - 1, j + 1]]
+
+                max_pixel_value = max(neighbor_pixels)
+                min_pixel_value = min(neighbor_pixels)
+                for pixel in neighbor_pixels:
+                    if pixel > 0:
+                        positive_count += 1
+                    elif pixel < 0:
+                        negative_count += 1
+                if negative_count > 0 and positive_count > 0: # Means that there is a zero crossing
+                    if img[i, j] > 0:
+                        crossing_zero_img[i, j] = img[i, j] + abs(min_pixel_value)
+                    elif img[i, j] < 0:
+                        crossing_zero_img[i, j] = abs(img[i, j]) + max_pixel_value
+            except IndexError: # ignore pixels at the image boundaries
+                pass
+    return crossing_zero_img
