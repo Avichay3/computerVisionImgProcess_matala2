@@ -1,5 +1,6 @@
 import numpy as np
 from cv2 import cv2 as cv
+import math
 
 
 def myID() -> np.int:
@@ -40,6 +41,21 @@ def conv2D(in_image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     :param kernel: A kernel
     :return: The convolved image
     """
+    kernel = np.flip(kernel)  # Flip the kernel horizontally and vertically
+    kernel_height, kernel_width = kernel.shape
+    img_height, img_width = in_image.shape
+    ans_matrix = np.zeros_like(in_image)
+    _pad_height = math.floor(kernel_height / 2)  # Padding for height
+    _pad_width = math.floor(kernel_width / 2)  # Padding for width
+    #  I choose the 'edge' mode for padding
+    mat = np.pad(in_image, pad_width=((_pad_height, _pad_height), (_pad_width, _pad_width)), mode='edge')
+
+    for rows in range(img_height):
+        for columns in range(img_width):
+            curr_mat = mat[rows:rows + kernel_height, columns:columns + kernel_width]
+            new_val = np.sum(curr_mat * kernel).round()
+            ans_matrix[rows, columns] = new_val
+    return ans_matrix
 
 
 
