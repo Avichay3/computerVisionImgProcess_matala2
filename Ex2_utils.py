@@ -112,7 +112,7 @@ def edgeDetectionZeroCrossingLOG(img: np.ndarray) -> np.ndarray:
     :param img: Input image
     :return: Edge matrix
     """
-
+# I have implement the second function
 
 
 def edgeDetectionZeroCrossingSimple(img: np.ndarray) -> np.ndarray:
@@ -148,3 +148,49 @@ def edgeDetectionZeroCrossingSimple(img: np.ndarray) -> np.ndarray:
             except IndexError: # ignore pixels at the image boundaries
                 pass
     return crossing_zero_img
+
+
+
+
+
+
+def houghCircle(img: np.ndarray, min_radius: int, max_radius: int) -> list:
+    """
+    Find Circles in an image using a Hough Transform algorithm extension
+    To find Edges you can Use OpenCV function: cv2.Canny
+    :param img: Input image
+    :param min_radius: Minimum circle radius
+    :param max_radius: Maximum circle radius
+    :return: A list containing the detected circles, [(x, y, radius), (x, y, radius), ...]
+    """
+    circles_list = []
+    threshold = 2
+    if img.max() <= 1:  # normalize image intensity if necessary
+        img = (img * 255).astype('uint8')
+
+    max_radius = min(max_radius, min(img.shape) // 2)
+    accumulator = np.zeros((len(img), len(img[0]), max_radius + 1), dtype=int)  # initialize accumulator matrix
+    x_derivative = cv.Sobel(img, cv.CV_64F, 1, 0, ksize=threshold)
+    y_derivative = cv.Sobel(img, cv.CV_64F, 0, 1, ksize=threshold)
+    direction = np.degrees(np.arctan2(y_derivative, x_derivative))
+
+    radius_step = max(1, (max_radius - min_radius) // 10)
+    edges = cv.Canny(img, 75, 150)  # detect edges using Canny edge detection
+
+    for x in range(len(edges)):  # iterate over edge pixels
+        for y in range(len(edges[0])):
+            if edges[x, y] == 255:
+                for radius in range(min_radius, max_radius + 1, radius_step):
+                    angle = direction[x, y] - 90
+                    x1, y1 = int(x - radius * np.cos(np.radians(angle))), int(y + radius * np.sin(np.radians(angle)))
+                    x2, y2 = int(x + radius * np.cos(np.radians(angle))), int(y - radius * np.sin(np.radians(angle)))
+                    if 0 < x1 < len(accumulator) and 0 < y1 < len(accumulator[0]):
+                        accumulator[x1, y1, radius] += 1
+                    if 0 < x2 < len(accumulator) and 0 < y2 < len(accumulator[0]):
+                        accumulator[x2, y2, radius] += 1
+
+    threshold = np.max(accumulator) * 0.5 + 1
+    x, y, radius = np.where(accumulator >= threshold)
+    circles_list.extend((y[i], x[i], radius[i]) for i in range(len(x)) if x[i] != 0 or y[i] != 0 or radius[i] != 0)
+
+    return circles_list
