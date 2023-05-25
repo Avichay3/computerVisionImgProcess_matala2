@@ -86,17 +86,29 @@ def blurImage1(in_image: np.ndarray, k_size: int) -> np.ndarray:
     :param k_size: Kernel size
     :return: The Blurred image
     """
+    x = np.linspace(-(k_size - 1) / 2, (k_size - 1) / 2, k_size)
+    gaussian_kernel = np.exp(-0.5 * (x ** 2))
+    gaussian_kernel /= np.sum(gaussian_kernel)  # normalize
+    blurred_image = cv2.filter2D(in_image, -1, gaussian_kernel, borderType=cv2.BORDER_REPLICATE)  # apply gaussian kernel
+    return blurred_image
 
 
 
 
-def blurImage2(in_image: np.ndarray, k_size: int) -> np.ndarray:
+
+def blurImage2(in_image: np.ndarray, kernel_size: np.ndarray) -> np.ndarray:
     """
-    Blur an image using a Gaussian kernel using Open CV built-in functions
+    Blur an image using a Gaussian kernel using OpenCV built-in functions
     :param in_image: Input image
-    :param k_size: Kernel size
+    :param kernel_size: Kernel size
     :return: The Blurred image
     """
+    if kernel_size % 2 == 0:
+        print("This kernel size is not an odd number!")
+    kernel = cv2.getGaussianKernel(int(kernel_size), -1)
+    kernel = kernel @ kernel.T
+    blurred_image = cv2.filter2D(in_image, -1, kernel)
+    return blurred_image
 
 
 
@@ -186,9 +198,23 @@ def houghCircle(img: np.ndarray, min_radius: int, max_radius: int) -> list:
 def bilateral_filter_implement(in_image: np.ndarray, k_size: int, sigma_color: float, sigma_space: float) -> (
         np.ndarray, np.ndarray):
     """
-    :param in_image: input image
+    :param in_image: img image
     :param k_size: Kernel size
     :param sigma_color: represents the filter sigma in the color space.
     :param sigma_space: represents the filter sigma in the coordinate.
-    :return: OpenCV implementation, my implementation
+    :return: Opencv2 implementation, my implementation
     """
+    opencv_func = cv2.bilateralFilter(in_image, k_size, sigma_color, sigma_space)
+    num = (k_size - 1) // 2  # number of pixels to pad on each side of the image
+    image_padded = np.pad(in_image, pad_width=num, mode='edge')
+    bilateral_image = np.zeros_like(in_image)  # empty array for the filtered image
+    x, y = np.indices((k_size, k_size)) - k_size // 2
+    distance_diff = np.exp(-(x ** 2 + y ** 2)/(2 * sigma_space ** 2))
+    for i in range(bilateral_image.shape[0]):
+        for j in range(bilateral_image.shape[1]):
+            center = image_padded[i:i + k_size, j:j + k_size]  # current pixel value and its neighbors
+            color_diff = np.exp(- (center - in_image[i, j]) ** 2 / (2 * sigma_color ** 2))
+            weight = color_diff * distance_diff  # bilateral filter weight matrix
+            weight = weight / np.sum(weight)  # normalize
+            bilateral_image[i, j] = np.sum(center * weight)
+    return opencv_func, bilateral_image
