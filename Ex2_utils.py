@@ -18,15 +18,15 @@ def conv1D(in_signal: np.ndarray, k_size: np.ndarray) -> np.ndarray:
     :return: The convolved array
     """
     # need to return the convolved array so needs to know what is the size of the convolved array
-    result = in_signal.size + k_size.size - 1
-
-    """" at first, needs to flip the kernel """
-    start_index = 0
-    end_index = len(k_size) - 1
-    while end_index > start_index:
-        k_size[start_index], k_size[end_index] = k_size[end_index], k_size[start_index]
-        start_index += 1
-        end_index += 1
+    result_size = in_signal.size + k_size.size - 1
+    result = np.zeros(result_size)
+    flipped_kernel = np.flip(k_size)  # Flipping the kernel using numpy function
+    for i in range():  # The convolution
+        for j in range(k_size.size):
+            if i - j < 0 or i - j >= in_signal.size:
+                continue
+            result[i] = result[i] + in_signal[i - j] * flipped_kernel[j]
+    return result
 
 
 
